@@ -1,4 +1,5 @@
 import BaseController from "@/controllers/baseController";
+import qs from 'qs';
 
 // Request controller for authorised requests
 // TODO: refactor
@@ -91,6 +92,20 @@ export default class UserRequestController extends BaseController{
 
     async getDefectHistory(id) {
         return this.genericGetRequest(`/errors/${id}/history`, {});
+    }
+
+    async updateError(id, error, comment) {
+        const params = qs.stringify({
+            shortDescription: error.shortDescription,
+            description: error.description,
+            state_id: error.state.id,
+            level_id: error.level.id,
+            urgency_id: error.urgency.id,
+            comment: comment
+        });
+        return this.client.post(`/errors/${id}`, params, {
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        });
     }
 
 

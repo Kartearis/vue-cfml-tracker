@@ -62,6 +62,21 @@
         </v-alert>
       </v-card-text>
     </v-card>
+    <v-snackbar
+        v-model="showQuickAlert"
+    >
+      {{ quickAlert }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="pink"
+            text
+            v-bind="attrs"
+            @click="showQuickAlert = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -82,6 +97,8 @@ export default {
     stateId: 0,
     errorBackup: null,
     alerts: [],
+    showQuickAlert: false,
+    quickAlert: "",
     error: {
       created_by: {
         surname: "",
@@ -108,14 +125,25 @@ export default {
     events: []
   }),
   computed: {
-    state: function() {
-      const states = {
-        "0": 'view',
-        "1": 'edit',
-        "2": 'add'
-      };
-      return states[this.stateId];
+    state: {
+      get: function() {
+        const states = {
+          0: 'view',
+          1: 'edit',
+          2: 'add'
+        };
+        return states[this.stateId];
+      },
+      set: function(state) {
+        const states = {
+          0: 'view',
+          1: 'edit',
+          2: 'add'
+        };
+        this.stateId = Object.entries(states).find((entry) => entry[1] === state)[0];
+      }
     }
+
   },
   methods: {
     buildEventAuthor: function(event) {
@@ -127,13 +155,30 @@ export default {
         this.error[field].id = value;
       else this.error[field] = value;
     },
-    formSave: function() {
-      //this.authStore.userRequestController
+    formSave: async function() {
+      this.state = 'view';
+      if (this.errorBackup === null) {
+        // If there is no change - just revert to view
+        return;
+      }
+      this.state = 'view';
+      try {
+        await this.authStore.userRequestController.updateError(this.id, this.error, this.comment);
+        this.loadHistory()
+      } catch (e) {
+        this.formRollback();
+        throw e;
+      }
       this.errorBackup = null;
     },
     formRollback: function() {
       this.error = this.errorBackup;
       this.errorBackup = null;
+    },
+    loadHistory: function() {
+      this.authStore.userRequestController.getDefectHistory(this.id)
+          .then((data) => this.events = data)
+          .catch((err) => this.alerts.push(err.response.data));
     }
   },
   beforeMount() {
@@ -141,9 +186,7 @@ export default {
     controller.getDefect(this.id)
       .then((data) => this.error = data)
       .catch((err) => this.alerts.push(err.response.data));
-    controller.getDefectHistory(this.id)
-      .then((data) => this.events = data)
-      .catch((err) => this.alerts.push(err.response.data));
+    this.loadHistory();
   }
 }
 </script>

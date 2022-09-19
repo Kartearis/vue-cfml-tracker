@@ -1,18 +1,23 @@
 <template>
-  <v-form>
+  <v-form
+    ref="form"
+    v-model="valid"
+  >
     <v-text-field
         :readonly="state === 'view'"
         label="Краткое описание"
         :value="error.shortDescription"
+        :rules="rules.fieldRules"
         @input="fieldChange('shortDescription', $event)"
     ></v-text-field>
     <v-select
         :readonly="state === 'view'"
-        :items="states"
+        :items="allowedStates"
         item-text="name"
         item-value="id"
         label="Статус"
         :value="error.state.id"
+        :rules="rules.selectRules"
         @input="fieldChange('state', $event)"
     ></v-select>
     <v-select
@@ -22,6 +27,7 @@
         :items="levels"
         item-text="name"
         item-value="id"
+        :rules="rules.selectRules"
         @input="fieldChange('level', $event)"
     ></v-select>
     <v-select
@@ -31,6 +37,7 @@
         :items="urgency"
         item-text="name"
         item-value="id"
+        :rules="rules.selectRules"
         @input="fieldChange('urgency', $event)"
     ></v-select>
     <v-text-field
@@ -49,6 +56,7 @@
         :value="error.description"
         rows="1"
         auto-grow
+        :rules="rules.fieldRules"
         @input="fieldChange('description', $event)"
     ></v-textarea>
     <v-textarea
@@ -57,10 +65,12 @@
         v-model="comment"
         rows="1"
         auto-grow
+        :rules="rules.fieldRules"
         @input="$emit('comment_change', $event)"
     ></v-textarea>
     <v-btn
       v-if="state !== 'view'"
+      :disabled="!valid"
       plain
       color="primary"
       @click="$emit('form_save')"
@@ -85,14 +95,35 @@ export default {
   // State is 'view', 'edit', or 'add'
   props: ['error', 'state', 'modified'],
   data: () => ({
+    rules: {
+      fieldRules: [v => !!v || 'Field is required'],
+      selectRules: [
+          v => !!v || 'Field is required',
+          v => v > 0 || 'Value not selected'
+      ]
+    },
     comment: "",
     states: [],
     levels: [],
-    urgency: []
+    urgency: [],
+    valid: false,
+    allowedStateTransitions: {
+      0: [1],
+      1: [1, 2],
+      2: [2, 3],
+      3: [2, 3, 4],
+      4: [4]
+    },
   }),
   methods: {
     fieldChange: function(field, value) {
       this.$emit('change', field, value);
+    }
+  },
+  computed: {
+    allowedStates: function() {
+      const allowedStateIds = this.allowedStateTransitions[this.error.state.id];
+      return this.states.filter((entry) => allowedStateIds.includes(entry.id));
     }
   },
   beforeMount() {
