@@ -1,15 +1,13 @@
 <template>
   <v-app>
     <top-bar>
-<!--      Disabled due to side-bar disability   -->
-<!--      <template v-slot:nav>-->
-<!--        <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>-->
-<!--      </template>-->
+      <template v-if="$router.currentRoute.name !== 'Auth'" v-slot:nav>
+        <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
+      </template>
     </top-bar>
-<!--    Side bar is disabled temporarily  -->
-<!--    <side-bar-->
-<!--      v-model="navDrawerShown"-->
-<!--    ></side-bar>-->
+    <side-bar v-if="$router.currentRoute.name !== 'Auth'"
+      v-model="navDrawerShown"
+    ></side-bar>
     <v-main>
       <router-view/>
     </v-main>
@@ -18,7 +16,7 @@
 
 <script>
 import  { RouterView } from 'vue-router';
-// import SideBar from "@/components/SideBar";
+import SideBar from "@/components/SideBar";
 import TopBar from "@/components/TopBar";
 
 export default {
@@ -27,7 +25,7 @@ export default {
   components: {
     TopBar,
     RouterView,
-    // SideBar
+    SideBar
   },
 
   methods: {
