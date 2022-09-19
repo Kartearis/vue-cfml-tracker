@@ -31,14 +31,24 @@ export default {
   data: () => ({
     navItems: [
       {
-        icon: 'mdi-folder',
+        icon: 'mdi-list-box',
         text: 'Ошибки',
         path: "/"
       },
       {
-        icon: 'mdi-folder',
+        icon: 'mdi-clipboard-plus',
+        text: 'Новая ошибка',
+        path: "/errors/new"
+      },
+      {
+        icon: 'mdi-account-multiple',
         text: 'Пользователи',
         path: "/users"
+      },
+      {
+        icon: 'mdi-account-plus',
+        text: 'Новый пользователь',
+        path: "/users/new"
       }
     ]
   })
