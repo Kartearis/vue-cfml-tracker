@@ -23,7 +23,8 @@ export default {
   }),
   methods: {
     openError: function(error) {
-      this.$router.push(`/errors/${error.id}`);
+      if (error)
+        this.$router.push(`/errors/${error.id}`);
     }
   },
   beforeMount() {
