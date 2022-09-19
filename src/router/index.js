@@ -5,6 +5,8 @@ import RegisterView from "@/views/RegisterView";
 
 import {useAuthStore} from "@/store/authStore";
 import DefectView from "@/views/DefectView";
+import DefectEditView from "@/views/DefectEditView";
+import UsersView from "@/views/UsersView";
 
 Vue.use(VueRouter)
 
@@ -23,6 +25,23 @@ const routes = [
     path: '/',
     name: 'Defect list',
     component: DefectView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/error/:id',
+    name: 'Defect edit',
+    component: DefectEditView,
+    props: true,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/users/',
+    name: 'Users list',
+    component: UsersView,
     props: true,
     meta: {
       requiresAuth: true
