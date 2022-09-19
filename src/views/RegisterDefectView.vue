@@ -20,8 +20,13 @@
 
 <script>
 import DefectForm from "@/components/defectForm";
+import {useAuthStore} from "@/store/authStore";
 export default {
   name: "RegisterDefectView",
+  setup() {
+    const authStore = useAuthStore()
+    return { authStore }
+  },
   components: {DefectForm},
   data: ()=>({
     valid: false,
@@ -56,8 +61,9 @@ export default {
         this.error[field].id = value;
       else this.error[field] = value;
     },
-    formSave: function() {
-      console.log(this.error);
+    formSave: async function() {
+      const result = await this.authStore.userRequestController.createError(this.error);
+      this.$router.push(`/errors/${result}`);
     }
   }
 }

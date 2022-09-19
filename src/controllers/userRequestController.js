@@ -108,6 +108,19 @@ export default class UserRequestController extends BaseController{
         });
     }
 
+    async createError(error) {
+        const params = qs.stringify({
+            shortDescription: error.shortDescription,
+            description: error.description,
+            level_id: error.level.id,
+            urgency_id: error.urgency.id
+        });
+        const result = await this.client.post(`/errors/`, params, {
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        });
+        return JSON.parse(result.data.errorId);
+    }
+
 
 
     /**
