@@ -169,7 +169,6 @@ export const useAuthStore = defineStore('auth', {
          * Attempt to recover user data from localhost
          */
         tryRememberUser() {
-            // console.log('Remember user');
             this.user = getLocalUser('vue-cfml-dt');
             if (this.user.token.value)
                 this.userRequestController.setToken(this.user.token.value);
@@ -180,6 +179,7 @@ export const useAuthStore = defineStore('auth', {
 });
 
 const store = useAuthStore(pinia);
+console.log("Set handler");
 store.userRequestController.setUnAuthHandler(() => {
     store.clearAuthData();
 });

@@ -24,8 +24,7 @@ export default class UserRequestController extends BaseController{
             .use(
                 (response) => response,
                 (error) => {
-
-                    if (error.status === 401)
+                    if (error.response.status === 401)
                     {
                         handler(error);
                     }
