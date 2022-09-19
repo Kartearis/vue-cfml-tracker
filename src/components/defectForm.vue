@@ -11,6 +11,7 @@
         @input="fieldChange('shortDescription', $event)"
     ></v-text-field>
     <v-select
+        v-if="state !== 'add'"
         :readonly="state === 'view'"
         :items="allowedStates"
         item-text="name"
@@ -41,12 +42,14 @@
         @input="fieldChange('urgency', $event)"
     ></v-select>
     <v-text-field
+        v-if="state !== 'add'"
         readonly
         label="Автор"
         :value="`${error.created_by.surname} ${error.created_by.name}`"
     ></v-text-field>
     <v-text-field
         readonly
+        v-if="state !== 'add'"
         label="Дата создания"
         :value="(new Date(error.created_at)).toLocaleString()"
     ></v-text-field>
@@ -114,22 +117,35 @@ export default {
       3: [2, 3, 4],
       4: [4]
     },
+    allowedStates: null
   }),
   methods: {
     fieldChange: function(field, value) {
       this.$emit('change', field, value);
+    },
+    updateAllowedStates: function() {
+      if (this.state === 'view' || this.allowedStates === null)
+      {
+        const allowedStateIds = this.allowedStateTransitions[this.error.state.id];
+        this.allowedStates = this.states.filter((entry) => allowedStateIds.includes(entry.id));
+      }
     }
   },
-  computed: {
-    allowedStates: function() {
-      const allowedStateIds = this.allowedStateTransitions[this.error.state.id];
-      return this.states.filter((entry) => allowedStateIds.includes(entry.id));
+  watch: {
+    error: function() {
+      this.updateAllowedStates();
+    },
+    state: function() {
+      this.updateAllowedStates();
     }
   },
   beforeMount() {
     const controller = this.authStore.userRequestController;
     controller.getDict('states')
-      .then((data) => this.states = data);
+      .then((data) => {
+        this.states = data;
+        this.updateAllowedStates();
+      });
     controller.getDict('levels')
         .then((data) => this.levels = data);
     controller.getDict('urgency')
