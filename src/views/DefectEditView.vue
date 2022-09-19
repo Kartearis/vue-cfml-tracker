@@ -8,7 +8,7 @@
           group
           mandatory
       >
-        <v-btn>
+        <v-btn @click="formRollback">
           <v-icon>
             mdi-eye
           </v-icon>
@@ -175,19 +175,33 @@ export default {
       this.error = this.errorBackup;
       this.errorBackup = null;
     },
-    loadHistory: function() {
-      this.authStore.userRequestController.getDefectHistory(this.id)
-          .then((data) => this.events = data)
-          .catch((err) => this.alerts.push(err.response.data));
+    loadHistory: async function() {
+      try {
+        this.events = await this.authStore.userRequestController.getDefectHistory(this.id)
+      } catch(err) {
+        this.alerts.push(err.response.data);
+      }
+    },
+    loadData: async function(id) {
+      const controller = this.authStore.userRequestController;
+      try{
+        this.error = await controller.getDefect(id);
+      } catch (err) {
+        this.alerts.push(err.response.data);
+      }
+      await this.loadHistory();
     }
   },
   beforeMount() {
-    const controller = this.authStore.userRequestController;
-    controller.getDefect(this.id)
-      .then((data) => this.error = data)
-      .catch((err) => this.alerts.push(err.response.data));
-    this.loadHistory();
-  }
+    this.loadData(this.id);
+  },
+  beforeRouteUpdate: async function(to, from, next) {
+    if (to.name === from.name && to.params.id !== from.params.id){
+      await this.loadData(to.params.id ?? "-1");
+      next();
+    }
+    else next();
+  },
 }
 </script>
 
