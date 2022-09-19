@@ -86,6 +86,10 @@ export default class UserRequestController extends BaseController{
         return this.genericGetRequest(`/dicts/${dictName}`, {});
     }
 
+    async getDefects() {
+        return this.genericGetRequest(`/errors/`, {});
+    }
+
     async getDefect(id) {
         return this.genericGetRequest(`/errors/${id}`, {});
     }
