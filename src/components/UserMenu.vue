@@ -56,17 +56,13 @@
 
 <script>
 import {useAuthStore} from "@/store/authStore";
+import deduplicateNavMixin from "@/mixins/deduplicateNavMixin";
 export default {
   name: "UserMenu",
+  mixins: [deduplicateNavMixin],
   setup() {
     const authStore = useAuthStore()
     return { authStore }
-  },
-  methods: {
-    deduplicatedNavigation: function(path) {
-      if (this.$router.currentRoute.path !== path)
-        this.$router.push(path);
-    }
   },
   computed: {
     displayableUser: function() {
