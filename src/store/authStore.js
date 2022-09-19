@@ -179,7 +179,6 @@ export const useAuthStore = defineStore('auth', {
 });
 
 const store = useAuthStore(pinia);
-console.log("Set handler");
 store.userRequestController.setUnAuthHandler(() => {
     store.clearAuthData();
 });

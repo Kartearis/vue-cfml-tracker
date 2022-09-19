@@ -33,7 +33,7 @@
             </v-chip>
           </v-list-item-title>
           <v-list-item-subtitle>
-            <v-icon> mdi-user </v-icon> {{ buildErrorSubtitle(error) }}
+            {{ buildErrorSubtitle(error) }}
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>

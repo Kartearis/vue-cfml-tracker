@@ -30,7 +30,7 @@ const routes = [
     }
   },
   {
-    path: '/error/:id',
+    path: '/errors/:id',
     name: 'Defect edit',
     component: DefectEditView,
     props: true,
