@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import FileView from '../views/FileView.vue'
 import AuthView from "@/views/AuthView";
 import RegisterView from "@/views/RegisterView";
 
 import {useAuthStore} from "@/store/authStore";
-import PublicDownloadView from "@/views/PublicDownloadView";
+import DefectView from "@/views/DefectView";
 
 Vue.use(VueRouter)
 
@@ -21,23 +20,9 @@ const routes = [
     component: RegisterView
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  },
-  {
-    path: '/download/:uuid',
-    name: 'Public download',
-    component: PublicDownloadView,
-    props: true
-  },
-  {
-    path: '/:folderId?',
-    name: 'Files',
-    component: FileView,
+    path: '/',
+    name: 'Defect list',
+    component: DefectView,
     props: true,
     meta: {
       requiresAuth: true

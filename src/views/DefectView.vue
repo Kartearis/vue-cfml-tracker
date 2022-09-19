@@ -1,10 +1,10 @@
 <template>
-  <div></div>
+  <div>Defect view</div>
 </template>
 
 <script>
 export default {
-  name: "ProfileView"
+  name: "DefectView"
 }
 </script>
 

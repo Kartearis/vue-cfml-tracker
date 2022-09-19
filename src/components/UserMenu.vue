@@ -19,9 +19,9 @@
           <v-subheader>Info</v-subheader>
           <template v-if="authStore.isAuthorized">
             <v-list-item
-                v-for="(value, field) of authStore.user"
-                :key="field">
-              <v-list-item-content v-if="value.displayable === undefined || value.displayable === true">
+                v-for="([key, value]) of displayableUser"
+                :key="key">
+              <v-list-item-content>
                 <v-list-item-title v-text="value.label">
                 </v-list-item-title>
                 <v-list-item-subtitle v-text="value.formatter !== undefined ? value.formatter(value.value) : value.value">
@@ -69,6 +69,9 @@ export default {
     }
   },
   computed: {
+    displayableUser: function() {
+      return Object.entries(this.authStore.user).filter(([, value]) => value.displayable !== false);
+    },
     actions: function() {
       let actions = null;
       if (this.authStore.isAuthorized) {

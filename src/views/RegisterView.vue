@@ -16,8 +16,8 @@
               </template>
               <v-text-field
                   class="input--fix-autofill"
-                  v-model="name"
-                  label="User name"
+                  v-model="login"
+                  label="Логин"
                   :rules="validation.fieldRules"
                   required
                   autocomplete="login"
@@ -25,17 +25,26 @@
               </v-text-field>
               <v-text-field
                   class="input--fix-autofill"
-                  v-model="email"
-                  label="Email"
-                  :rules="validation.emailRules"
+                  v-model="name"
+                  label="Имя"
+                  :rules="validation.fieldRules"
                   required
-                  autocomplete="email"
+                  autocomplete="surname"
+              >
+              </v-text-field>
+              <v-text-field
+                  class="input--fix-autofill"
+                  v-model="surname"
+                  label="Фамилия"
+                  :rules="validation.fieldRules"
+                  required
+                  autocomplete="surname"
               >
               </v-text-field>
               <v-text-field
                   class="input--fix-autofill"
                   v-model="password"
-                  label="Password"
+                  label="Пароль"
                   :rules="validation.fieldRules"
                   :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
                   :type="passwordVisible ? 'text' : 'password'"
@@ -78,7 +87,8 @@ export default {
     valid: false,
     passwordVisible: false,
     name: "",
-    email: "",
+    surname: "",
+    login: "",
     password: "",
     alert: null,
     loading: false,
@@ -93,10 +103,10 @@ export default {
   methods: {
     register: async function() {
       this.loading = true;
-      const result = await this.authStore.register(this.email, this.password, this.name);
+      const result = await this.authStore.register(this.login, this.password, this.name, this.surname);
       if (result.success) {
         this.alert = result;
-        const secRes = await this.authStore.authenticate(this.email, this.password);
+        const secRes = await this.authStore.authenticate(this.login, this.password);
         if (secRes.success)
         {
           this.alert = null;

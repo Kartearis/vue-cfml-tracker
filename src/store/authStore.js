@@ -1,7 +1,6 @@
 import {defineStore} from 'pinia';
 import createPinia from "@/controllers/piniaSingleton";
 import UserRequestController from "@/controllers/userRequestController";
-import Vue from "vue";
 // import router from "@/router";
 
 const pinia = createPinia();
@@ -41,36 +40,25 @@ export function fileSizeFormatter(bytes) {
  * @type {() => Record<string, {value: unknown, label: string} | {displayable: false, value: unknown}>}
  */
 const getDefaultUserData = () => ({
+    id: {
+        value: "",
+        displayable: false
+    },
+    login: {
+        value: "",
+        label: "Имя пользователя"
+    },
     name: {
         value: "",
-        label: "Username"
+        label: "Имя"
     },
-    email: {
-        value: "",
-        label: "Email"
-    },
-    storageInUse: {
-        label: "Storage in use",
-        value: 0,
-        formatter: fileSizeFormatter
-    },
-    storageTotal: {
-        label: "Total storage",
-        value: 0,
-        formatter: fileSizeFormatter
-    },
-    registrationDate: {
-        value: "",
-        label: "Registration date",
-        formatter: (date) => date.toLocaleString()
+    surname: {
+        label: "Фамилия",
+        value: ""
     },
     token: {
         displayable: false,
         value: null
-    },
-    preferredFileLayout: {
-        displayable: false,
-        value: 0
     }
 });
 
@@ -103,7 +91,7 @@ function setLocalUser(prefix, data) {
 // TODO: Should handle requests failed because of 'unauthorized'
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        userRequestController: new UserRequestController('http://markwebdev.ru/api/v1'),
+        userRequestController: new UserRequestController('http://localhost/rest/controller/'),
         user: getDefaultUserData()
     }),
     getters: {
@@ -119,10 +107,11 @@ export const useAuthStore = defineStore('auth', {
          */
         async authenticate(email, password) {
             try {
-                const token = await this.userRequestController.login(email, password);
-                this.user.token.value = token;
-                this.userRequestController.setToken(token);
-                await this.getUserData();
+                const data = await this.userRequestController.login(email, password);
+                this.user.token.value = data.token;
+                this.user.id.value = data.id;
+                this.userRequestController.setToken(data.token);
+                await this.getUserData(data.id);
                 return {success: true, errors: ["Logged in!"]}
             }
             catch (e) {
@@ -133,14 +122,15 @@ export const useAuthStore = defineStore('auth', {
         /**
          * Register user. Returns object with results for view.
          *
-         * @param {string} email
+         * @param login
          * @param {string} password
          * @param {string} name
+         * @param surname
          * @returns {Promise<{success: boolean, errors: string[]}>}
          */
-        async register(email, password, name) {
+        async register(login, password, name, surname) {
             try {
-                await this.userRequestController.register(email, password, name);
+                await this.userRequestController.createUser(login, password, name, surname);
                 return {success: true, errors: ["Registered!"]};
             }
             catch (e) {
@@ -154,7 +144,6 @@ export const useAuthStore = defineStore('auth', {
          * @returns {Promise<void>}
          */
         async logout() {
-            await this.userRequestController.logout();
             this.clearAuthData();
         },
 
@@ -163,14 +152,13 @@ export const useAuthStore = defineStore('auth', {
             this.userRequestController.setToken(null);
         },
 
-        async getUserData() {
+        async getUserData(userId) {
             try {
-                const userData = await this.userRequestController.getUserData();
-                this.user.email.value = userData.email;
+                const userData = await this.userRequestController.getUserData(userId);
+                this.user.id.value = userId;
+                this.user.surname.value = userData.surname;
                 this.user.name.value = userData.name;
-                this.user.storageInUse.value = userData.storage_size;
-                this.user.storageTotal.value = userData.storage_quota;
-                this.user.registrationDate.value = new Date(userData.created_at);
+                this.user.login.value = userData.login;
             }
             catch (e) {
                 console.debug(e);
@@ -182,36 +170,12 @@ export const useAuthStore = defineStore('auth', {
          */
         tryRememberUser() {
             // console.log('Remember user');
-            this.user = getLocalUser('vue-cloud-storage');
+            this.user = getLocalUser('vue-cfml-dt');
             if (this.user.token.value)
                 this.userRequestController.setToken(this.user.token.value);
             // Pull user data updates
-            this.getUserData();
+            this.getUserData(this.user.id.value);
         },
-
-        /**
-         * Action for local update of used storage. It is accurate enough for runtime size redisplay
-         *
-         * @param {Number} amount
-         */
-        updateStorageTaken(amount) {
-            this.user.storageInUse.value += amount;
-        },
-
-        /**
-         * Saves preferred layout of files (grid/list) to storage, creating field if required
-         *
-         * @param {number} layoutIndex
-         */
-        setPreferredFileLayout(layoutIndex) {
-            if (this.user.preferredFileLayout)
-                this.user.preferredFileLayout.value = layoutIndex;
-            else {
-                const layoutData = getDefaultUserData().preferredFileLayout;
-                layoutData.value = layoutIndex;
-                Vue.set(this.user, 'preferredFileLayout', layoutData);
-            }
-        }
     },
 });
 
@@ -223,5 +187,5 @@ store.tryRememberUser();
 store.$subscribe((
     mutation,
     state
-) => setLocalUser('vue-cloud-storage', state.user), {detached: true});
+) => setLocalUser('vue-cfml-dt', state.user), {detached: true});
 

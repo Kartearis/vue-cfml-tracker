@@ -17,8 +17,8 @@
               <v-text-field
                   class="input--fix-autofill"
                   v-model="login"
-                  label="Email"
-                  :rules="validation.emailRules"
+                  label="Login"
+                  :rules="validation.fieldRules"
                   required
               >
               </v-text-field>
