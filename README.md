@@ -34,7 +34,8 @@ npm run serve
 Для нормальной работы также должен быть запущен бэкенд.
 
 Так как в серверной части не настроен CORS, нужно использовать расширение, которое
-отключит в браузере проверки CORS, например [это](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino/)
+отключит в браузере проверки CORS, например [это](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino/).
+Расширение должно быть включено, иначе запросы не будут корректно отправлены на сервер.
 
 
 ## А где бэкенд?
