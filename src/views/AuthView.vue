@@ -46,14 +46,6 @@
             >
               Log in
             </v-btn>
-            <v-btn
-                :loading="loading"
-                ref="regBtn"
-                plain
-                @click="navigateToRegistration"
-            >
-              Register
-            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -62,13 +54,13 @@
 </template>
 
 <script>
-import { mapStores } from 'pinia';
 import {useAuthStore} from "@/store/authStore";
 
 export default {
   name: "AuthView",
-  computed: {
-    ...mapStores(useAuthStore)
+  setup() {
+    const authStore = useAuthStore()
+    return { authStore }
   },
   data: () => ({
     valid: false,

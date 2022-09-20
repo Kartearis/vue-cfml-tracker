@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import AuthView from "@/views/AuthView";
-import RegisterView from "@/views/RegisterView";
+import RegisterUserView from "@/views/RegisterUserView";
 
 import {useAuthStore} from "@/store/authStore";
 import DefectView from "@/views/DefectView";
@@ -18,9 +18,12 @@ const routes = [
     component: AuthView
   },
   {
-    path: '/register',
+    path: '/users/new',
     name: 'Register',
-    component: RegisterView
+    meta: {
+      requiresAuth: true
+    },
+    component: RegisterUserView
   },
   {
     path: '/',

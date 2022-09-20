@@ -1,9 +1,9 @@
 <template>
-  <v-container fill-height>
-    <v-row align="center" justify="center">
-      <v-col cols="6">
+  <v-container class="pt-5">
+    <v-row>
+      <v-col>
         <v-card>
-          <v-card-title>Register</v-card-title>
+          <v-card-title>Регистрация нового пользователя</v-card-title>
           <v-card-text>
             <v-form
                 ref="form"
@@ -64,7 +64,7 @@
                 :disabled="!valid"
                 @click="register"
             >
-              Register
+              Создать
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -74,14 +74,14 @@
 </template>
 
 <script>
-import { mapStores } from 'pinia';
 import {useAuthStore} from "@/store/authStore";
 
 // TODO: Reduce duplicated code
 export default {
-  name: "RegisterView",
-  computed: {
-    ...mapStores(useAuthStore)
+  name: "RegisterUserView",
+  setup() {
+    const authStore = useAuthStore()
+    return { authStore }
   },
   data: () => ({
     valid: false,
@@ -103,18 +103,12 @@ export default {
   methods: {
     register: async function() {
       this.loading = true;
-      const result = await this.authStore.register(this.login, this.password, this.name, this.surname);
-      if (result.success) {
-        this.alert = result;
-        const secRes = await this.authStore.authenticate(this.login, this.password);
-        if (secRes.success)
-        {
-          this.alert = null;
-          this.$router.push('/');
-        }
-        else this.alert = {success: false, errors: ['Autologin failed', ...secRes.errors]};
+      try {
+        await this.authStore.userRequestController.createUser(this.login, this.password, this.name, this.surname);
+      } catch (e) {
+        this.alert = e;
       }
-      else this.alert = result;
+      this.$router.push('/users/');
       this.loading = false;
     },
   },
