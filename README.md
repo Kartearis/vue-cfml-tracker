@@ -16,6 +16,12 @@
 - Авторизация и выход из аккаунта
 
 ## Скриншоты
+![image](https://user-images.githubusercontent.com/32914913/191366368-cd525d5b-07fe-4f12-beee-8fd34472de70.png)
+![image](https://user-images.githubusercontent.com/32914913/191366443-69e387ba-d34a-4472-b882-c88d4d6e82bd.png)
+![image](https://user-images.githubusercontent.com/32914913/191366410-beea3cd7-72b8-4205-94ca-bd0d8a3aa1f9.png)
+![image](https://user-images.githubusercontent.com/32914913/191366478-969b871a-12fc-45b6-be94-d9b2f5454357.png)
+![image](https://user-images.githubusercontent.com/32914913/191366493-87c3ebaf-7c5f-4ec2-9a85-16ec061dddae.png)
+![image](https://user-images.githubusercontent.com/32914913/191366539-68330946-1cc3-49af-900d-acdc1f53a8a1.png)
 
 ## Запуск
 Используйте следующие команды:
