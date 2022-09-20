@@ -168,7 +168,7 @@ export default {
     updateSelection: function (value) {
       this.selection.error = value;
       this.$emit('open_error', this.errors[this.selection.error]);
-      this.selection.error = null;
+      this.selection.error = undefined;
     }
   }
 }

@@ -22,13 +22,15 @@
               v-text="alert"
           ></v-alert>
           <v-text-field
-              :label="fieldLabel"
-              :rules="rules"
-              :placeholder="placeholder"
-              v-model="fieldValue"
+              v-for="field of fields"
+              :key="field.name"
+              :label="field.label"
+              :rules="field.rules"
+              :placeholder="field.placeholder"
+              v-model="values[field.name]"
               required
-              :readonly="readonly"
-              :autofocus="autofocus"
+              :readonly="field.readonly"
+              :autofocus="field.autofocus"
           ></v-text-field>
         </v-form>
       </v-card-text>
@@ -44,7 +46,7 @@
         <v-btn
             plain
             color="primary"
-            @click.stop="onAccept ? onAccept(fieldValue, alerts, closeDialog) : closeDialog()"
+            @click.stop="$emit('form_save', values)"
             :disabled="locked || !valid"
             v-text="acceptActionTitle ?? 'Accept'"
         >
@@ -58,7 +60,7 @@
 import {useAuthStore} from "@/store/authStore";
 
 export default {
-  name: "OneFieldDialog",
+  name: "GenericDialog",
   setup() {
     const authStore = useAuthStore()
     return { authStore }
@@ -76,27 +78,31 @@ export default {
       type: Function,
       required: false
     },
-    onAccept: {
-      type: Function,
-      required: false
-    },
     acceptActionTitle: String,
     title: {
       type: String,
       required: true
     },
-    fieldLabel: String,
-    placeholder: String,
-    readonly: Boolean,
-    autofocus: Boolean
+    startingValues: Object,
+    fields: {
+      type: Array,
+    //  label: String,
+    //  name: String
+    //   placeholder: String,
+    //   readonly: Boolean,
+    //   autofocus: Boolean,
+    //   rules: {
+    //     type: Array,
+    //     default: () => [
+    //       value => !!value
+    //     ]
+    //   }
+    }
   },
   data: () => ({
-    rules: [
-      value => !!value
-    ],
     valid: false,
     alerts: [],
-    fieldValue: "",
+    values: {},
     locked: false,
     progress: {
       inProgress: false,
@@ -125,6 +131,14 @@ export default {
   watch: {
     isShown: function(newValue, oldValue) {
       if (this.onShow && !oldValue && newValue) this.onShow(this);
+    },
+    startingValues: {
+      immediate: true,
+      handler: function(newValue) {
+        // Update values if dialog is not currently shown
+        if (!this.isShown)
+          this.values = newValue;
+      }
     }
   }
 }

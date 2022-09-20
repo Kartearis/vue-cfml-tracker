@@ -82,6 +82,17 @@ export default class UserRequestController extends BaseController{
         return response.data;
     }
 
+    async getUsers() {
+        return this.genericGetRequest('/users/', {});
+    }
+
+    async updateUser(id, name, surname) {
+        const res = await this.client.patch(`/users/${id}`, {}, {
+            params: {name, surname}
+        });
+        return res.data;
+    }
+
     async getDict(dictName) {
         return this.genericGetRequest(`/dicts/${dictName}`, {});
     }
