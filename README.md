@@ -1,4 +1,4 @@
-# Cfml Error tracker UI
+# CFML Error tracker UI
 
 Фронтенд для трекера ошибок.
 Написан на Vue2 + Vuetify.
