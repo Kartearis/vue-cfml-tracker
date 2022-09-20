@@ -24,7 +24,7 @@
 ![image](https://user-images.githubusercontent.com/32914913/191366539-68330946-1cc3-49af-900d-acdc1f53a8a1.png)
 
 ## Запуск
-Используйте следующие команды:
+Используйте следующие команды в папке репозитория (требуется nodejs):
 ```
 npm i
 npm run serve
