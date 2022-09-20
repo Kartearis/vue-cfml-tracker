@@ -1,6 +1,6 @@
 <template>
   <v-list subheader>
-    <v-subheader>Ошибки</v-subheader>
+
     <v-list-item-group :value="selection.error" @change="updateSelection($event)">
       <v-data-iterator
         :items="errors"
@@ -12,7 +12,7 @@
         <template v-slot:header>
           <v-toolbar
               dark
-              color="blue darken-3"
+              color="primary"
               class="mb-1"
           >
             <v-text-field
@@ -22,7 +22,7 @@
                 solo-inverted
                 hide-details
                 prepend-inner-icon="mdi-magnify"
-                label="Search"
+                label="Поиск"
             ></v-text-field>
             <template v-if="$vuetify.breakpoint.mdAndUp">
               <v-spacer></v-spacer>
@@ -33,7 +33,7 @@
                   hide-details
                   :items="dataIterator.keys"
                   prepend-inner-icon="mdi-magnify"
-                  label="Sort by"
+                  label="Сортировать"
               ></v-select>
               <v-spacer></v-spacer>
               <v-btn-toggle
@@ -117,8 +117,13 @@ export default {
       search: "",
       sortBy: "",
       keys: [
-        'id',
-        'shortDescription'
+        { value: 'id', text: 'Номер дефекта'},
+        { value: 'shortDescription', text: 'Описание'},
+        { value: 'created_at', text: 'Дата создания'},
+        { value: 'created_by.name', text: 'Автор'},
+        { value: 'state.id', text: 'Статус'},
+        { value: 'level.id', text: 'Критичность'},
+        { value: 'urgency.id', text: 'Срочность'},
       ],
       sortDesc: false
     }
@@ -138,8 +143,8 @@ export default {
     },
     getLevelColor: function(level) {
       const colors = {
-        "1": "orange lighten-2",
-        "2": "red lighten-2",
+        "1": "red lighten-2",
+        "2": "orange lighten-2",
         "3": "light-blue lighten-2",
         "4": "green lighten-2"
       };
@@ -173,6 +178,7 @@ export default {
   .defect-list-item__title {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 5px;
     align-items: center;
   }
